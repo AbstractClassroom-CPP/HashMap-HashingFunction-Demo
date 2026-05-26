@@ -4,7 +4,18 @@ project(Dictionary VERSION 0.1.0 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+include(FetchContent)
 include(CTest)
+
+# ----------------------
+# Dependencies
+# ----------------------
+
+FetchContent_Declare(SimpleIntegerHash
+  GIT_REPOSITORY https://github.com/AbstractClassroom-CPP/Simple-Integer-Hash.git
+  GIT_TAG        v1.0.0
+)
+FetchContent_MakeAvailable(SimpleIntegerHash)
 
 set(_dictionary_default_examples ${PROJECT_IS_TOP_LEVEL})
 set(_dictionary_default_tests ${PROJECT_IS_TOP_LEVEL})
@@ -30,6 +41,11 @@ target_include_directories(Dictionary
 )
 
 target_compile_features(Dictionary PUBLIC cxx_std_17)
+
+target_link_libraries(Dictionary
+    PUBLIC
+        SimpleIntegerHash::simple_integer_hash
+)
 
 target_compile_options(Dictionary PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
@@ -77,12 +93,6 @@ install(
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Dictionary
 )
 
-# Useful for in-tree consumption via FetchContent/add_subdirectory
-export(
-    EXPORT DictionaryTargets
-    FILE ${CMAKE_CURRENT_BINARY_DIR}/DictionaryTargets.cmake
-    NAMESPACE Dictionary::
-)
 
 # ----------------------
 # Subdirectories

@@ -1,5 +1,8 @@
 @PACKAGE_INIT@
 
+include(CMakeFindDependencyMacro)
+find_dependency(SimpleIntegerHash CONFIG)
+
 include("${CMAKE_CURRENT_LIST_DIR}/DictionaryTargets.cmake")
 
 check_required_components(Dictionary)

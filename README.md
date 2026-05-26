@@ -2,7 +2,10 @@
 
 This repository is a small, intentionally-over-simple C++/CMake project for teaching:
 
-- A `Dictionary` class implemented with a **singly linked list** of key/value pairs
+- A `Dictionary` class implemented with a **hash-driven nibble trie** (4 bits at a time)
+  - Keys are hashed to a 64-bit integer
+  - Each 4-bit nibble chooses a branch
+  - Each level's branches are stored as a small **linked list of siblings**
 - A CMake project layout (`src/`, `include/`, `examples/`, `tests/`)
 - Unit testing with **GTest**
 - Can be consumed as a library by other CMake projects (via `FetchContent` or `find_package`)
@@ -20,7 +23,7 @@ cmake --build build
 ./build/examples/dictionary_example
 ```
 
-## Run the profiling example (shows why this linked-list dictionary is slow)
+## Run the profiling example
 
 ```sh
 ./build/examples/profile_dictionary
@@ -49,11 +52,14 @@ include(FetchContent)
 FetchContent_Declare(
   Dictionary
   GIT_REPOSITORY https://github.com/AbstractClassroom-CPP/HashMap-HashingFunction-Demo.git
-  GIT_TAG main
+  GIT_TAG v0.2.0
 )
 FetchContent_MakeAvailable(Dictionary)
 target_link_libraries(your_app PRIVATE Dictionary::Dictionary)
 ```
+
+This project uses `SimpleIntegerHash` via `FetchContent`, so using `FetchContent` is the
+easiest way to consume it.
 
 ### Option B: Install + find_package
 
@@ -69,3 +75,7 @@ Then in your consuming project:
 find_package(Dictionary CONFIG REQUIRED)
 target_link_libraries(your_app PRIVATE Dictionary::Dictionary)
 ```
+
+Note: the installed package expects `SimpleIntegerHash` to also be findable via
+`find_package(SimpleIntegerHash CONFIG REQUIRED)`.
+
